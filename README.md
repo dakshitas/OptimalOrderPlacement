@@ -34,6 +34,7 @@ The best-performing set was:
   "lambda_under": 0.01,
   "theta_queue": 0.001
 }
+```
 
 ## Performance Summary
 
