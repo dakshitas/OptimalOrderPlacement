@@ -37,7 +37,7 @@ The best-performing set was:
 ```
 
 ## Performance Summary
-
+```json
 "cont_kukanov": {
   "total_cash": 1113701.0,
   "avg_price": 222.7402
@@ -59,6 +59,7 @@ The best-performing set was:
   "vs_twap": 14.25,
   "vs_vwap": -7.69
 }
+```
 
 ## Key Takeaways
 
