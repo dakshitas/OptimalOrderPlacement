@@ -4,7 +4,7 @@ This project implements and evaluates a static smart order routing strategy base
 
 ---
 
-## 🔧 Implementation Summary
+## Implementation Summary
 
 - **Allocator Logic**: Implemented exactly as per the `allocator_pseudocode.txt`, generating all feasible share allocations per snapshot and selecting the one with the lowest expected cost.
 - **Backtest Engine**: Replays a message stream from `l1_day.csv`, feeds venue-level snapshots into the allocator, simulates order execution up to the posted ask size, and rolls forward unfilled quantity.
@@ -16,7 +16,7 @@ This project implements and evaluates a static smart order routing strategy base
 
 ---
 
-## 📈 Results Summary
+## Results Summary
 
 ```json
 "best_parameters": {
