@@ -1,29 +1,42 @@
 # Cont & Kukanov Smart Order Router Backtest
 
-This project implements and evaluates a static smart order routing strategy based on the cost model proposed by **Cont & Kukanov (2014)**. The router aims to minimize execution cost when buying 5,000 shares across multiple venues by optimizing overfill, underfill, and queue risk penalties.
+This project implements a static smart order routing strategy inspired by **Cont & Kukanov (2014)** to minimize execution cost across fragmented limit order markets. The strategy splits a 5,000-share buy order across multiple venues using a cost function penalizing overfills, underfills, and queue risk.
 
 ---
 
-## Implementation Summary
+## Code Structure
 
-- **Allocator Logic**: Implemented exactly as per the `allocator_pseudocode.txt`, generating all feasible share allocations per snapshot and selecting the one with the lowest expected cost.
-- **Backtest Engine**: Replays a message stream from `l1_day.csv`, feeds venue-level snapshots into the allocator, simulates order execution up to the posted ask size, and rolls forward unfilled quantity.
-- **Parameter Search**: Conducted a grid search over:
-  - `lambda_over ∈ {0.001, 0.01, 0.1}`
-  - `lambda_under ∈ {0.001, 0.01, 0.1}`
-  - `theta_queue ∈ {0.0001, 0.001, 0.01}`  
-  Best parameters selected based on minimum total cost over the execution window.
+- **`backtest.py`**: Main script implementing:
+  - Static allocator (`allocate` function from pseudocode),
+  - Backtest engine (replaying snapshots from `l1_day.csv`),
+  - Baselines: Best Ask, TWAP, VWAP,
+  - Grid search over penalty parameters,
+  - Final JSON output and optional plot.
+
+- **`allocator_pseudocode.txt`**: Provided pseudocode translated line-by-line into Python.
+- **`results.png`**: Visual comparison of cumulative costs under different strategies.
 
 ---
 
-## Results Summary
+## Parameter Search Details
+
+A small grid search was run over the three penalty parameters:
+
+- `lambda_over ∈ {0.001, 0.01, 0.1}`
+- `lambda_under ∈ {0.001, 0.01, 0.1}`
+- `theta_queue ∈ {0.0001, 0.001, 0.01}`
+
+The best-performing set was:
 
 ```json
-"best_parameters": {
+{
   "lambda_over": 0.01,
   "lambda_under": 0.01,
   "theta_queue": 0.001
-},
+}
+
+## Performance Summary
+
 "cont_kukanov": {
   "total_cash": 1113701.0,
   "avg_price": 222.7402
@@ -45,3 +58,15 @@ This project implements and evaluates a static smart order routing strategy base
   "vs_twap": 14.25,
   "vs_vwap": -7.69
 }
+
+## Key Takeaways
+
+The Cont-Kukanov allocator beat Best Ask by 3.61 bps and TWAP by 14.25 bps, validating the model’s effectiveness.
+VWAP slightly outperformed, possibly due to favorable size-weighted pricing in this short time window.
+
+## Suggested Improvement
+
+To improve fill realism:
+
+Model slippage: Penalize fills that require crossing multiple levels or trading in high-volatility intervals.
+Queue position modeling: Estimate partial fill probabilities based on historical queue outflows and current depth.
